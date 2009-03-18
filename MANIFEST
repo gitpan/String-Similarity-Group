@@ -1,0 +1,12 @@
+Changes
+MANIFEST
+Makefile.PL
+bin/gbs
+lib/String/Similarity/Group.pm
+lib/String/Similarity/Group.pod
+t/0.t.optional
+t/02.t
+t/03_hard.t
+t/listlong.txt
+t/listshort.txt
+META.yml                                 Module meta-data (added by MakeMaker)

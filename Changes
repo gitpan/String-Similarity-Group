@@ -1,0 +1,22 @@
+2009-03-18 11:38  cvs
+
+	* lib/String/Similarity/Group.pm: made separate pod file, added
+	  documentation
+
+2009-03-12 18:20  cvs
+
+	* bin/gbs, lib/String/Similarity/Group.pm, t/02.t, t/03_hard.t:
+	  added option for much more in depth matching, is slow but useful
+	  in some cases added flags to use these alternate depths to gbs
+
+2009-03-12 16:06  cvs
+
+	* bin/gbs, lib/String/Similarity/Group.pm: added some doc to bin,
+	  also allow to print yaml string added and cleaned up doc and
+	  added examples
+
+2009-03-11 17:48  cvs
+
+	* MANIFEST, Makefile.PL, bin/gbs, lib/String/Similarity/Group.pm,
+	  t/0.t, t/02.t, t/listlong.txt, t/listshort.txt: Initial revision
+
