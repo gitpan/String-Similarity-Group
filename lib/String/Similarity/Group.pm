@@ -3,7 +3,7 @@ use strict;
 use vars qw($VERSION @EXPORT_OK %EXPORT_TAGS @ISA);
 use Exporter;
 use Carp;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.5 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.6 $ =~ /(\d+)/g;
 @ISA = qw/Exporter/;
 @EXPORT_OK = qw/groups groups_lazy groups_hard loners similarest/;
 %EXPORT_TAGS = ( all => \@EXPORT_OK );
@@ -115,21 +115,24 @@ sub similarest { # may return undef
    defined $string or croak("missing string to test to");
    $min ||=0;
 
-   my %high = ( score => 0, element => undef );
+   my %high = ( score => ( $min - 0.01 ), element => undef );
 
-   for my $element ( @$aref ){
-      my $score = similarity( $element, $string ) # means that 0 does not make a hit
+   for my $element ( @$aref ){      
+
+      my $score = similarity( $element, $string, $high{score} ) # means that 0 does not make a hit
          or next;
-      $score >= $min 
-         or next;
+      #$score >= $min 
+      #   or next;
       ($score > $high{score}) 
          or next;
       %high = ( score => $score, element => $element );  
    }
 
-   $high{score} or return;
-
-   return ( $high{element}, $high{score} );
+   $high{element} 
+      or return;   
+   wantarray 
+      and return ( $high{element}, $high{score} );
+   $high{element};
 }
 
 1;

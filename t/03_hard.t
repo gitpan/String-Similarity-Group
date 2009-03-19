@@ -17,7 +17,7 @@ _testrun_hard(0.1, \@a,1);
 
 my @b = (
 '4marcus aureliUs',
-'4marcus urelius',
+'4marcus auelius',
 '4marcus aurelius',
 '4macrus aurelius',
 
@@ -64,7 +64,7 @@ sub _testrun_hard {
 
    my $groups_count = scalar @g;
    ok( $groups_count == $groups_expected,
-      "Got groups expected ?  $groups_count == $groups_expected");
+      "Got groups expected= $groups_expected, got back : $groups_count");
 
 
    #$loners_instead and return;

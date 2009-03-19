@@ -1,3 +1,9 @@
+2009-03-19 16:19  cvs
+
+	* lib/String/Similarity/Group.pm, t/03_hard.t: made slight
+	  modification to similarest(), using limit on
+	  String::Similarity::similarity(), hopefully to speed up searching
+
 2009-03-18 11:38  cvs
 
 	* lib/String/Similarity/Group.pm: made separate pod file, added

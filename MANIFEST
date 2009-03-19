@@ -1,10 +1,13 @@
 Changes
+INSTALL
 MANIFEST
 Makefile.PL
+README
 bin/gbs
 lib/String/Similarity/Group.pm
 lib/String/Similarity/Group.pod
 t/0.t.optional
+t/00.t
 t/02.t
 t/03_hard.t
 t/listlong.txt
