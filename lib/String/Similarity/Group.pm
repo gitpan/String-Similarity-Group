@@ -3,9 +3,9 @@ use strict;
 use vars qw($VERSION @EXPORT_OK %EXPORT_TAGS @ISA);
 use Exporter;
 use Carp;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.6 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.7 $ =~ /(\d+)/g;
 @ISA = qw/Exporter/;
-@EXPORT_OK = qw/groups groups_lazy groups_hard loners similarest/;
+@EXPORT_OK = qw/groups groups_lazy groups_hard loners similarest sort_by_similarity/;
 %EXPORT_TAGS = ( all => \@EXPORT_OK );
 use String::Similarity 'similarity';
 
@@ -42,6 +42,7 @@ sub _group_hard { # test every element of every group!
       
       # no group matching, make new group.
       $group{$element} = [$element];  
+
    }
 
    \%group;
@@ -133,6 +134,31 @@ sub similarest { # may return undef
    wantarray 
       and return ( $high{element}, $high{score} );
    $high{element};
+}
+
+sub sort_by_similarity {
+   my ($aref, $string, $min ) = @_;
+   ref $aref and ref $aref eq 'ARRAY' or croak("First argument is array ref");
+   defined $string or croak("missing string to test to");
+   #$min ||=0;
+
+   # rank them all first
+   my %score;
+   for my $element (@$aref){
+
+      my $score = similarity( $element, $string, $min );
+      $score ||= 0;      
+
+      printf STDERR "%s %-18s min:%s, got:%0.2f\n", $string, $element, $min, $score;
+      if ( defined $min ){
+         $score >= $min or next;
+      }
+
+      $score{$element} = $score;      
+   }  
+
+   my @sorted = sort { $score{$b} <=> $score{$a} } keys %score;#@$aref;
+   wantarray ? @sorted : \@sorted;
 }
 
 1;

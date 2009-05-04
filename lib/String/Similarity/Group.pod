@@ -126,6 +126,20 @@ What if you only want to get a result of the similarity is at least 0.8 ?
 If none matches (if all score to 0, or all scores are below your similarity minimum 
 argument), returns undef.
 
+=head2 sort_by_silimarity()
+
+Arguments are array ref, string, and optionally a similarity minimum.
+Returns array or array ref depending on context.
+
+Elements are ordered by highest to lowest similarity.
+
+   my @a = qw/assumptionatedexpress socount acount/;
+   my @b = sort_by_similarity( \@, 'acoun' ); # returns  acount socount assumptionatedexpress
+   
+   my @b = sort_by_similarity( \@, 'acoun', 0.9 ); # returns acount
+
+
+
 =cut
 
 

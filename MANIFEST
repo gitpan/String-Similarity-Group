@@ -10,6 +10,7 @@ t/0.t.optional
 t/00.t
 t/02.t
 t/03_hard.t
+t/04_sort_by_similarity.t
 t/listlong.txt
 t/listshort.txt
 META.yml                                 Module meta-data (added by MakeMaker)

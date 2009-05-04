@@ -5,7 +5,7 @@ WriteMakefile(
    VERSION_FROM => 'lib/String/Similarity/Group.pm',
    
 
-   # gen /usr/bin/pmused by Thu Mar 19 16:21:11 EDT 2009 
+   # gen /usr/bin/pmused by Mon May  4 16:46:12 EDT 2009 
    PREREQ_PM => {
       'Carp'                              => '1',
       'Cwd'                               => '3',
