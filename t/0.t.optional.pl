@@ -1,3 +1,4 @@
+#!/usr/bin/perl
 use Test::Simple 'no_plan';
 use strict;
 use lib './lib';
@@ -5,11 +6,19 @@ use String::Similarity::Group ':all';
 use Cwd;
 use vars qw($_part $cwd);
 $cwd = cwd();
-use Getopt::Std::Strict 's:f:';
+use Getopt::Std::Strict 's:f:h';
 
+$opt_h and print usage() and exit;
 
 $opt_s ||= 0.80;
 $opt_f ||= './t/listshort.txt';
+
+sub usage {
+   q{
+      -h          help
+      -f path     list file
+      -s float    threshold
+   }}
 
 
 

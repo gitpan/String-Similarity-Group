@@ -3,7 +3,7 @@ use strict;
 use vars qw($VERSION @EXPORT_OK %EXPORT_TAGS @ISA);
 use Exporter;
 use Carp;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.7 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.10 $ =~ /(\d+)/g;
 @ISA = qw/Exporter/;
 @EXPORT_OK = qw/groups groups_lazy groups_hard loners similarest sort_by_similarity/;
 %EXPORT_TAGS = ( all => \@EXPORT_OK );
@@ -85,10 +85,10 @@ sub _group_medium { # get the highest matching group id
    ELEMENT: for my $element (@{$aref}) {  
          my ($group_id, $score ) = similarest( [ keys %group ], $element, $min );
 
-         if( $score ){ # one of the group keys had the highest match
-            push @{$group{$group_id}}, $element;
-            next ELEMENT;
-         }
+         $score and  # one of the group keys had the highest match
+            ( push @{$group{$group_id}}, $element ) 
+            and next ELEMENT;
+         
 
          # no group matching, make new group.
          $group{$element} = [$element];
@@ -110,31 +110,27 @@ sub groups_lazy { grep { scalar @$_  > 1 } values %{_group_lazy(@_)}   }
 
 
 
-sub similarest { # may return undef
+
+sub similarest { # may return undef   
    my ( $aref, $string, $min )= @_;
    ref $aref and ref $aref eq 'ARRAY' or croak("First argument is array ref");
    defined $string or croak("missing string to test to");
-   $min ||=0;
+   
+   my %high = ( score => ( ($min || 0 ) - 0.01 ), element => undef );
 
-   my %high = ( score => ( $min - 0.01 ), element => undef );
+   for ( @$aref ){
 
-   for my $element ( @$aref ){      
-
-      my $score = similarity( $element, $string, $high{score} ) # means that 0 does not make a hit
+      my $score = similarity( $_, $string, $high{score} ) # means that 0 does not make a hit
          or next;
-      #$score >= $min 
-      #   or next;
-      ($score > $high{score}) 
-         or next;
-      %high = ( score => $score, element => $element );  
+      ($score > $high{score}) or next;
+      $high{score} = $score;
+      $high{element} = $_;
    }
 
-   $high{element} 
-      or return;   
-   wantarray 
-      and return ( $high{element}, $high{score} );
-   $high{element};
+   $high{element} or return;      
+   wantarray ? ( $high{element}, $high{score} ) : $high{element};
 }
+
 
 sub sort_by_similarity {
    my ($aref, $string, $min ) = @_;
@@ -149,7 +145,7 @@ sub sort_by_similarity {
       my $score = similarity( $element, $string, $min );
       $score ||= 0;      
 
-      printf STDERR "%s %-18s min:%s, got:%0.2f\n", $string, $element, $min, $score;
+      #(printf STDERR "%s %-18s min:%s, got:%0.2f\n", $string, $element, $min, $score) if $DEBUG;
       if ( defined $min ){
          $score >= $min or next;
       }
