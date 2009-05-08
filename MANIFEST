@@ -12,6 +12,9 @@ t/02.t
 t/03_hard.t
 t/04_sort_by_similarity.t
 t/05_sort-by-similarity-longasslist.pl
+t/06_group_by_similarity_new.pl
+t/07_groupnew.t
+t/99_cleanup.t
 t/listlong.txt
 t/listlong_medium.txt
 t/listlongest.txt

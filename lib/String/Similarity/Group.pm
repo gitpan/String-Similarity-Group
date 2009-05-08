@@ -1,11 +1,11 @@
 package String::Similarity::Group;
 use strict;
-use vars qw($VERSION @EXPORT_OK %EXPORT_TAGS @ISA);
+use vars qw($VERSION @EXPORT_OK %EXPORT_TAGS @ISA %SEEN $DEBUG);
 use Exporter;
 use Carp;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.10 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.14 $ =~ /(\d+)/g;
 @ISA = qw/Exporter/;
-@EXPORT_OK = qw/groups groups_lazy groups_hard loners similarest sort_by_similarity/;
+@EXPORT_OK = qw/groups groups_lazy groups_hard loners similarest sort_by_similarity _group_new _group_medium/;
 %EXPORT_TAGS = ( all => \@EXPORT_OK );
 use String::Similarity 'similarity';
 
@@ -79,22 +79,76 @@ sub _group_medium { # get the highest matching group id
    my($min,$aref)=@_;
    ref $aref and ref $aref eq 'ARRAY' or croak("Argument is not an array ref");
    (($min >=0) and ($min <= 1)) or croak("min similarity must be between 0.00 and 1.00");
-
+   use LEOCHARRE::Debug;
    my %group;
 
-   ELEMENT: for my $element (@{$aref}) {  
-         my ($group_id, $score ) = similarest( [ keys %group ], $element, $min );
+   ELEMENT: for (@{$aref}) {         
+         my ($group_id, $score ) = similarest( [ keys %group ], $_, $min );
 
+         debug("score $score, '$_' gid $group_id, min $min");
          $score and  # one of the group keys had the highest match
-            ( push @{$group{$group_id}}, $element ) 
-            and next ELEMENT;
-         
+            (( push @{$group{$group_id}}, $_ ) 
+            and next ELEMENT);
+         warn("+ group created: $_\n") if $DEBUG;
 
          # no group matching, make new group.
-         $group{$element} = [$element];
+         $group{$_} = [$_];
    }
 
    \%group;
+}
+
+
+
+sub _group_new {
+   my($min,$aref)=@_;
+   ref $aref and ref $aref eq 'ARRAY' or croak("Argument is not an array ref");
+   (($min >=0) and ($min <= 1)) or croak("min similarity must be between 0.00 and 1.00");
+
+   my @elements = @$aref; # COPY it
+
+   my @groups;
+
+
+   my $i = 0;
+   
+   ELEMENT:  while ( my $element = shift @elements ) {
+      defined $element or next ELEMENT;
+   
+      #$DEBUG and (printf STDERR "iteration: %s %-80s\n", $i++, "'$element'");
+      
+      my @possible_group;
+      
+      
+      TEST: for my $index ( 0 .. (scalar @elements - 1)){
+
+         my $element_being_tested = $elements[$index];                  
+         defined $element_being_tested or next TEST;
+
+         my $score = similarity( $element, $element_being_tested, $min );
+
+         #$DEBUG and print STDERR "Test [t$min:s$score] index($index) [$element][$element_being_tested]\n";
+
+         $score >= $min or next TEST; 
+         $DEBUG and warn(" + $element == $element_being_tested\n");         
+         $DEBUG and warn(" + [t$min:s$score] index($index) [$element][$element_being_tested]\n\n");
+      
+         #(similarity( $element, $elements[$index], $min ) > $min) or next TEST;
+         
+         push @possible_group, $element_being_tested;
+         $elements[$index] = undef; # undef it
+      }
+
+      # did we have matches?
+      if( defined @possible_group and scalar @possible_group){
+         push @possible_group, $element;
+         push @groups, \@possible_group;
+      }      
+            
+      $DEBUG and ( printf STDERR "group length: %s\n%s\n", scalar @possible_group, '-'x60 );
+   }
+
+   wantarray ? (@groups) : \@groups;
 }
 
 
@@ -110,25 +164,25 @@ sub groups_lazy { grep { scalar @$_  > 1 } values %{_group_lazy(@_)}   }
 
 
 
-
 sub similarest { # may return undef   
-   my ( $aref, $string, $min )= @_;
-   ref $aref and ref $aref eq 'ARRAY' or croak("First argument is array ref");
-   defined $string or croak("missing string to test to");
+   my ( $aref, $string, $min )= @_;   
+   (ref $aref eq 'ARRAY') and (defined $string) or croak("bad arguments");
+  
+   my $high_score = 0;
+   if( $min ){ $high_score = $min; $high_score-=0.01 }
+
+   my $high_element = undef;
    
-   my %high = ( score => ( ($min || 0 ) - 0.01 ), element => undef );
-
-   for ( @$aref ){
-
-      my $score = similarity( $_, $string, $high{score} ) # means that 0 does not make a hit
-         or next;
-      ($score > $high{score}) or next;
-      $high{score} = $score;
-      $high{element} = $_;
+   for ( @$aref ){      
+      my $score = similarity( $_, $string, $high_score ); #> $high_score or next;
+      #my $score = similarity( $_, $string, $high_score ) or next;
+      ( $score > $high_score ) or next;
+      $high_score = $score;
+      $high_element = $_;   
    }
-
-   $high{element} or return;      
-   wantarray ? ( $high{element}, $high{score} ) : $high{element};
+    
+   $high_element or return;      
+   wantarray ? ( $high_element, $high_score ) : $high_element;
 }
 
 

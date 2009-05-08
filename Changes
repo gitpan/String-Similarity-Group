@@ -1,3 +1,9 @@
+2009-05-07 14:33  cvs
+
+	* lib/String/Similarity/Group.pm, t/06_group_by_similarity_new.pl,
+	  t/benchmarks.dev.list, t/benchmarks.dev.zip: added benchmarking
+	  dev
+
 2009-05-05 12:08  cvs
 
 	* lib/String/Similarity/Group.pm: took out some debug junk

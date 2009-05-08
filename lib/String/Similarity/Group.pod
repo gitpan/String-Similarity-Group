@@ -118,7 +118,7 @@ alike the name 'Paul'..
    my @names = qw/Paula James Marcus Gregg/;
    my( $closest_name, $score ) = similarest(  \@names, 'Paul' );
 
-What if you only want to get a result of the similarity is at least 0.8 ?
+What if you only want to get a result if the similarity is at least 0.8 ?
 
    my @names = qw/Paula James Marcus Gregg/;
    my( $closest_name, $score ) = similarest(  \@names, 'Paul', 0.8 );

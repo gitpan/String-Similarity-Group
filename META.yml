@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               String-Similarity-Group
-version:            1.10
+version:            1.14
 abstract:           ~
 author:  []
 license:            perl
@@ -12,9 +12,12 @@ requires:
     Cwd:                  3
     Exporter:             5
     Getopt::Std::Strict:  1.01
+    LEOCHARRE::Dir:       1.06
     Smart::Comments:      1
     String::Similarity:   1.03
     Test::Simple:         0
+    Time::Format:         1.02
+    Time::HiRes:          1.65
     YAML:                 0.62
 no_index:
     directory:
