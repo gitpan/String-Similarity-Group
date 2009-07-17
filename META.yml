@@ -1,29 +1,32 @@
 --- #YAML:1.0
 name:               String-Similarity-Group
-version:            1.14
+version:            1.15
 abstract:           ~
 author:  []
 license:            perl
 distribution_type:  module
 configure_requires:
     ExtUtils::MakeMaker:  0
+build_requires:
+    ExtUtils::MakeMaker:  0
 requires:
     Carp:                 1
     Cwd:                  3
     Exporter:             5
     Getopt::Std::Strict:  1.01
-    LEOCHARRE::Dir:       1.06
+    LEOCHARRE::Debug:     1.01
+    LEOCHARRE::Dir:       1.07
     Smart::Comments:      1
     String::Similarity:   1.03
     Test::Simple:         0
-    Time::Format:         1.02
-    Time::HiRes:          1.65
-    YAML:                 0.62
+    Time::Format:         1.09
+    Time::HiRes:          1.86
+    YAML:                 0.66
 no_index:
     directory:
         - t
         - inc
-generated_by:       ExtUtils::MakeMaker version 6.48
+generated_by:       ExtUtils::MakeMaker version 6.50
 meta-spec:
     url:      http://module-build.sourceforge.net/META-spec-v1.4.html
     version:  1.4

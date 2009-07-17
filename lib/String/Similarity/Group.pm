@@ -3,7 +3,7 @@ use strict;
 use vars qw($VERSION @EXPORT_OK %EXPORT_TAGS @ISA %SEEN $DEBUG);
 use Exporter;
 use Carp;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.14 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.15 $ =~ /(\d+)/g;
 @ISA = qw/Exporter/;
 @EXPORT_OK = qw/groups groups_lazy groups_hard loners similarest sort_by_similarity _group_new _group_medium/;
 %EXPORT_TAGS = ( all => \@EXPORT_OK );
@@ -210,6 +210,7 @@ sub sort_by_similarity {
    my @sorted = sort { $score{$b} <=> $score{$a} } keys %score;#@$aref;
    wantarray ? @sorted : \@sorted;
 }
+
 
 1;
 
