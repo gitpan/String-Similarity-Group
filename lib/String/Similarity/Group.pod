@@ -2,12 +2,12 @@
 
 =head1 NAME
 
-String::Similarity::Group - take a list of strings and segregate by similarity
+String::Similarity::Group - take a list of strings and group them by similarity within a threshold
 
 =head1 SYNOPSIS
 
    use String::Similarity::Group ':all';
-
+   
    my @elements = qw/victory victori matrix latrix ooland/;   
    
    my @groups   = groups( 0.8, \@elements );
@@ -15,12 +15,10 @@ String::Similarity::Group - take a list of strings and segregate by similarity
    
    my @loners   = loners( 0.8, \@elements );
    # ( 'ooland' )
-
+   
    # Which of the elements closest matches a string?
    my($element, $score) = similarest(\@elements, 'oland');
    # ( 'ooland', 0.83 )
-   
-
 
 =head1 DESCRIPTION
 
@@ -43,11 +41,12 @@ None exported by default.
 First argument is similarity minimum.
 Second argument is an array ref ( of the strings in question).
 
-
 Returns array. 
 Each element of this array is an array ref, of a group of elements, 
 that match at least as your similarity minimum argument.
 If an element did not contain at least one match, it is left out.
+
+   my @groups = groups( 0.80, [ qw/vitamins vtamins vitanims profile/] );
 
 =head3 lazy matching vs hard matching
 
@@ -139,7 +138,6 @@ Elements are ordered by highest to lowest similarity.
    my @b = sort_by_similarity( \@, 'acoun', 0.9 ); # returns acount
 
 
-
 =cut
 
 
@@ -189,7 +187,8 @@ Should this work differently? See any bugs? Have any suggestions? Please contact
 
 =head1 SEE ALSO
 
-L<String::Similarity>
+L<String::Similarity>, excellent package to deem similarity between strings.
+L<gbs> - included in package, cli interface command.
 
 =head1 AUTHOR
 

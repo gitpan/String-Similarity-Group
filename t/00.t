@@ -1,4 +1,6 @@
+#!/usr/bin/perl -w
 use Test::Simple 'no_plan';
+use warnings;
 use strict;
 use lib './lib';
 use Cwd;

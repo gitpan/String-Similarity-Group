@@ -3,11 +3,13 @@ use strict;
 use vars qw($VERSION @EXPORT_OK %EXPORT_TAGS @ISA %SEEN $DEBUG);
 use Exporter;
 use Carp;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.15 $ =~ /(\d+)/g;
+use LEOCHARRE::Debug;
+use String::Similarity 'similarity';
+
+$VERSION = sprintf "%d.%02d", q$Revision: 1.16 $ =~ /(\d+)/g;
 @ISA = qw/Exporter/;
 @EXPORT_OK = qw/groups groups_lazy groups_hard loners similarest sort_by_similarity _group_new _group_medium/;
 %EXPORT_TAGS = ( all => \@EXPORT_OK );
-use String::Similarity 'similarity';
 
 sub _group_hard { # test every element of every group!
    my($min,$aref)=@_;
@@ -79,20 +81,19 @@ sub _group_medium { # get the highest matching group id
    my($min,$aref)=@_;
    ref $aref and ref $aref eq 'ARRAY' or croak("Argument is not an array ref");
    (($min >=0) and ($min <= 1)) or croak("min similarity must be between 0.00 and 1.00");
-   use LEOCHARRE::Debug;
    my %group;
 
    ELEMENT: for (@{$aref}) {         
-         my ($group_id, $score ) = similarest( [ keys %group ], $_, $min );
+      no warnings; 
+      my ($group_id, $score ) = similarest( [ keys %group ], $_, $min );
 
-         debug("score $score, '$_' gid $group_id, min $min");
-         $score and  # one of the group keys had the highest match
-            (( push @{$group{$group_id}}, $_ ) 
-            and next ELEMENT);
-         warn("+ group created: $_\n") if $DEBUG;
+      debug("score/string/groupid/min $score/$_/$group_id/$min");
+      $score and  # one of the group keys had the highest match
+         (( push @{$group{$group_id}}, $_ ) 
+         and next ELEMENT);
 
-         # no group matching, make new group.
-         $group{$_} = [$_];
+      debug("+ no group matching, make new group '$_'");
+      $group{$_} = [$_];
    }
 
    \%group;
@@ -140,7 +141,7 @@ sub _group_new {
       }
 
       # did we have matches?
-      if( defined @possible_group and scalar @possible_group){
+      if( @possible_group and scalar @possible_group){
          push @possible_group, $element;
          push @groups, \@possible_group;
       }      
